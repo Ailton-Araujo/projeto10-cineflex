@@ -21,7 +21,7 @@ export default function SeatsPage() {
           <SeatsContainer>
             {seats.seats.map((seat) => {
               return (
-                <SeatItem key={seat.id} bg={seat.isAvailable}>
+                <SeatItem data-test="seat" key={seat.id} bg={seat.isAvailable}>
                   {seat.name}
                 </SeatItem>
               );
@@ -45,13 +45,13 @@ export default function SeatsPage() {
 
           <FormContainer>
             Nome do Comprador:
-            <input placeholder="Digite seu nome..." />
+            <input data-test="client-name" placeholder="Digite seu nome..." />
             CPF do Comprador:
-            <input placeholder="Digite seu CPF..." />
-            <button>Reservar Assento(s)</button>
+            <input data-test="client-cpf" placeholder="Digite seu CPF..." />
+            <button data-test="book-seat-btn">Reservar Assento(s)</button>
           </FormContainer>
 
-          <FooterContainer>
+          <FooterContainer data-test="footer">
             <div>
               <img src={seats.movie.posterURL} alt={seats.movie.title} />
             </div>
@@ -128,10 +128,8 @@ const CaptionItem = styled.div`
   font-size: 12px;
 `;
 const SeatItem = styled.div`
-  border: 1px solid ${({bg})=> bg ? "lightblue": " #F7C52B"}; // Essa cor deve mudar
-  background-color: ${({bg})=> bg ? "lightblue": " #FBE192"};
-  
-
+  border: 1px solid ${({bg})=> bg ? "#7B8B99": " #F7C52B"}; // Essa cor deve mudar
+  background-color: ${({bg})=> bg ? "#C3CFD9": " #FBE192"};
   height: 25px;
   width: 25px;
   border-radius: 25px;

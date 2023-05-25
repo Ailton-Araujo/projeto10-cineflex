@@ -21,12 +21,12 @@ export default function SessionsPage() {
             {sessions.days.map((day) => {
               console.log(day);
               return (
-                <SessionContainer key={day.id}>
+                <SessionContainer data-test="movie-day" key={day.id}>
                   {day.weekday} - {day.date}
                   <ButtonsContainer>
                     {day.showtimes.map((time) => {
                       return (
-                        <button>
+                        <button data-test="showtime">
                           <Link to={`/assentos/${time.id}`}>{time.name}</Link>
                         </button>
                       );
@@ -36,7 +36,7 @@ export default function SessionsPage() {
               );
             })}
           </div>
-          <FooterContainer>
+          <FooterContainer data-test="footer">
             <div>
               <img src={sessions.posterURL} alt={sessions.title} />
             </div>
