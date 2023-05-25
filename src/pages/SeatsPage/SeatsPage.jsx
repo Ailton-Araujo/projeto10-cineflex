@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getSeats } from "../../components/axios";
 getSeats;
@@ -7,11 +7,26 @@ getSeats;
 export default function SeatsPage() {
   const { idSessao } = useParams();
   const [seats, setSeats] = useState([]);
+  const [selected, setSelected] = useState([]);
+
+  const [name, setName] = useState("");
+  const [cpf, setCpf] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     getSeats(idSessao, setSeats);
   }, []);
-  console.log(seats);
+
+  function sendPost(e) {
+    e.preventDefault();
+    let newReserve = {
+      ids: [...selected],
+      name: name,
+      cpf: cpf,
+    };
+    console.log(newReserve);
+  }
+
   return (
     <PageContainer>
       Selecione o(s) assento(s)
@@ -21,7 +36,35 @@ export default function SeatsPage() {
           <SeatsContainer>
             {seats.seats.map((seat) => {
               return (
-                <SeatItem data-test="seat" key={seat.id} bg={seat.isAvailable}>
+                <SeatItem
+                  data-test="seat"
+                  key={seat.id}
+                  bg={
+                    selected.includes(seat.id)
+                      ? "#1AAE9E"
+                      : seat.isAvailable
+                      ? "#C3CFD9"
+                      : "#FBE192"
+                  }
+                  border={
+                    selected.includes(seat.id)
+                      ? "#0E7D71"
+                      : seat.isAvailable
+                      ? "#7B8B99"
+                      : "#F7C52B"
+                  }
+                  onClick={() => {
+                    if (!seat.isAvailable) {
+                      alert("Esse assento não está disponível");
+                    } else {
+                      if (selected.includes(seat.id)) {
+                        console.log("hi")
+                      } else {
+                        setSelected([...selected, seat.id]);
+                      }
+                    }
+                  }}
+                >
                   {seat.name}
                 </SeatItem>
               );
@@ -30,25 +73,45 @@ export default function SeatsPage() {
 
           <CaptionContainer>
             <CaptionItem>
-              <CaptionCircle />
+              <CaptionCircle color={"#1AAE9E"} border={"#0E7D71"} />
               Selecionado
             </CaptionItem>
             <CaptionItem>
-              <CaptionCircle />
+              <CaptionCircle color={"#C3CFD9"} border={"#7B8B99"} />
               Disponível
             </CaptionItem>
             <CaptionItem>
-              <CaptionCircle />
+              <CaptionCircle color={"#FBE192"} border={"#F7C52B"} />
               Indisponível
             </CaptionItem>
           </CaptionContainer>
 
-          <FormContainer>
-            Nome do Comprador:
-            <input data-test="client-name" placeholder="Digite seu nome..." />
-            CPF do Comprador:
-            <input data-test="client-cpf" placeholder="Digite seu CPF..." />
-            <button data-test="book-seat-btn">Reservar Assento(s)</button>
+          <FormContainer onSubmit={sendPost}>
+            <label htmlFor="name">Nome do Comprador:</label>
+            <input
+              data-test="client-name"
+              id="name"
+              placeholder="Digite seu nome..."
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <label htmlFor="cpf">CPF do Comprador:</label>
+            <input
+              data-test="client-cpf"
+              id="cpf"
+              placeholder="Digite seu CPF..."
+              value={cpf}
+              onChange={(e) => setCpf(e.target.value)}
+              required
+            />
+            <button
+              data-test="book-seat-btn"
+              type="submit"
+              // onClick={() => navigate(`/sucesso`)}
+            >
+              Reservar Assento(s)
+            </button>
           </FormContainer>
 
           <FooterContainer data-test="footer">
@@ -89,7 +152,7 @@ const SeatsContainer = styled.div`
   justify-content: center;
   margin-top: 20px;
 `;
-const FormContainer = styled.div`
+const FormContainer = styled.form`
   width: calc(100vw - 40px);
   display: flex;
   flex-direction: column;
@@ -98,9 +161,31 @@ const FormContainer = styled.div`
   font-size: 18px;
   button {
     align-self: center;
+    width: 225px;
+    height: 42px;
+    background: #e8833a;
+    border-radius: 3px;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px;
+    text-align: center;
+    letter-spacing: 0.04em;
+    color: #ffffff;
   }
   input {
     width: calc(100vw - 60px);
+    height: 51px;
+    background: #ffffff;
+    border: 1px solid #d5d5d5;
+    border-radius: 3px;
+    &::placeholder {
+      padding-left: 20px;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 21px;
+      color: #afafaf;
+    }
   }
 `;
 const CaptionContainer = styled.div`
@@ -111,8 +196,8 @@ const CaptionContainer = styled.div`
   margin: 20px;
 `;
 const CaptionCircle = styled.div`
-  border: 1px solid blue; // Essa cor deve mudar
-  background-color: lightblue; // Essa cor deve mudar
+  border: 1px solid ${({ border }) => border}; // Essa cor deve mudar
+  background-color: ${({ color }) => color}; // Essa cor deve mudar
   height: 25px;
   width: 25px;
   border-radius: 25px;
@@ -127,18 +212,22 @@ const CaptionItem = styled.div`
   align-items: center;
   font-size: 12px;
 `;
-const SeatItem = styled.div`
-  border: 1px solid ${({bg})=> bg ? "#7B8B99": " #F7C52B"}; // Essa cor deve mudar
-  background-color: ${({bg})=> bg ? "#C3CFD9": " #FBE192"};
+const SeatItem = styled.button`
   height: 25px;
   width: 25px;
   border-radius: 25px;
+  border: 1px solid ${({ border }) => border}; // Essa cor deve mudar
+  background-color: ${({ bg }) => bg};
   font-family: "Roboto";
   font-size: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 5px 3px;
+  /* &:disabled {
+    background-color: ${({ bg }) => bg};
+    border: 1px solid ${({ bg }) => (bg ? "#0E7D71" : " #F7C52B")};
+  } */
 `;
 const FooterContainer = styled.div`
   width: 100%;

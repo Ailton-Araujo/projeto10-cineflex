@@ -1,13 +1,14 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { getMovies } from "../../components/axios";
 
 export default function HomePage() {
   const [movies, setMovies] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
-     getMovies(setMovies);
+    getMovies(setMovies);
   }, []);
   console.log(movies);
   return (
@@ -17,9 +18,11 @@ export default function HomePage() {
         {movies.map((movie) => {
           return (
             <MovieContainer data-test="movie" key={movie.id}>
-              <Link to={`/sessoes/${movie.id}`}>
-                <img src={movie.posterURL} alt={movie.title} />
-              </Link>
+              <img
+                src={movie.posterURL}
+                alt={movie.title}
+                onClick={() => navigate(`/sessoes/${movie.id}`)}
+              />
             </MovieContainer>
           );
         })}

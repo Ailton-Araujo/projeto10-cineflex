@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { getSessions } from "../../components/axios";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function SessionsPage() {
   const { idFilme } = useParams();
   const [sessions, setSessions] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getSessions(idFilme, setSessions);
@@ -26,8 +27,11 @@ export default function SessionsPage() {
                   <ButtonsContainer>
                     {day.showtimes.map((time) => {
                       return (
-                        <button data-test="showtime">
-                          <Link to={`/assentos/${time.id}`}>{time.name}</Link>
+                        <button
+                          data-test="showtime"
+                          onClick={() => navigate(`/assentos/${time.id}`)}
+                        >
+                          {time.name}
                         </button>
                       );
                     })}
@@ -80,9 +84,6 @@ const ButtonsContainer = styled.div`
   button {
     margin-right: 20px;
   }
-  a {
-    text-decoration: none;
-  }
 
   button {
     width: 83px;
@@ -90,14 +91,11 @@ const ButtonsContainer = styled.div`
     background: #e8833a;
     border: none;
     border-radius: 3px;
-    a {
-      font-weight: 400;
-      font-size: 18px;
-      line-height: 21px;
-      letter-spacing: 0.02em;
-
-      color: #ffffff;
-    }
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px;
+    letter-spacing: 0.02em;
+    color: #ffffff;
   }
 `;
 const FooterContainer = styled.div`
