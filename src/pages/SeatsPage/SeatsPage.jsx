@@ -8,8 +8,8 @@ export default function SeatsPage() {
   const [seats, setSeats] = useState([]);
   const [selectedId, setSelectedID] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [name, setName]=useState("");
-  const [cpf, setCpf]=useState("");
+  const [name, setName] = useState("");
+  const [cpf, setCpf] = useState("");
 
   const navigate = useNavigate();
 
@@ -20,15 +20,13 @@ export default function SeatsPage() {
   function sendPost(e) {
     e.preventDefault();
 
-    let newReserve = {
+    const newReserve = {
       ids: [...selectedId],
       name: name,
       cpf: cpf,
     };
 
-    console.log(newReserve)
-
-    let dataReserve = {
+    const dataReserve = {
       movie: seats.movie.title,
       day: seats.day.date,
       hour: seats.name,
@@ -40,10 +38,10 @@ export default function SeatsPage() {
     const promise = postReserve(newReserve);
 
     promise.then((res) => {
-      console.log(res.data)
+      console.log(res.data);
       navigate(`/sucesso`, { state: { dataReserve } });
     });
-  }
+  };
 
   return (
     <PageContainer>
@@ -89,7 +87,7 @@ export default function SeatsPage() {
                     }
                   }}
                 >
-                  {console.log(selected,selectedId)}
+                  {console.log(selected, selectedId)}
                   {seat.name}
                 </SeatItem>
               );
@@ -118,7 +116,7 @@ export default function SeatsPage() {
               id="name"
               placeholder="Digite seu nome..."
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               required
             />
             <label htmlFor="cpf">CPF do Comprador:</label>
@@ -127,7 +125,7 @@ export default function SeatsPage() {
               id="cpf"
               placeholder="Digite seu CPF..."
               value={cpf}
-              onChange={e => setCpf(e.target.value)}
+              onChange={(e) => setCpf(e.target.value)}
               required
             />
             <button data-test="book-seat-btn" type="submit">

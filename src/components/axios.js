@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export function apiToken(key){
-   axios.defaults.headers.common['Authorization'] = {key};
+export function apiToken(key) {
+  axios.defaults.headers.common["Authorization"] = { key };
 }
 
 export function getMovies(set) {
@@ -40,6 +40,9 @@ export function getSeats(idSession, set) {
   });
 }
 
-export function postReserve(data){
-  return axios.post("https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many", data)
+export function postReserve(data) {
+  return axios.post(
+    "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
+    data
+  );
 }
