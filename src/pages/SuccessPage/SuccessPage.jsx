@@ -1,38 +1,37 @@
-import { useNavigate, useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 export default function SuccessPage() {
-    const navigate = useNavigate()
-    const {state} = useLocation()
-    console.log(state.dataReserve)
-    
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  console.log(state.dataReserve);
+
   return (
     <PageContainer>
       <h1>
         Pedido feito <br /> com sucesso!
       </h1>
 
-      <TextContainer>
+      <TextContainer data-test="movie-info">
         <strong>
           <p>Filme e sessão</p>
         </strong>
         <p>{state.dataReserve.movie}</p>
-        <p>{state.dataReserve.day} - {state.dataReserve.hour}</p>
+        <p>
+          {state.dataReserve.day} - {state.dataReserve.hour}
+        </p>
       </TextContainer>
 
-      <TextContainer>
+      <TextContainer data-test="seats-info">
         <strong>
           <p>Ingressos</p>
         </strong>
-        {state.dataReserve.seats.map(seat =>{
-          return(
-<p>Assento {seat}</p>
-          )
+        {state.dataReserve.seats.map((seat) => {
+          return <p>Assento {seat}</p>;
         })}
-
       </TextContainer>
 
-      <TextContainer>
+      <TextContainer data-test="client-info">
         <strong>
           <p>Comprador</p>
         </strong>
@@ -40,7 +39,9 @@ export default function SuccessPage() {
         <p>CPF: {state.dataReserve.cpf}</p>
       </TextContainer>
 
-      <button data-test="go-home-btn" onClick={()=> navigate("/")}>Voltar para Home</button>
+      <button data-test="go-home-btn" onClick={() => navigate("/")}>
+        Voltar para Home
+      </button>
     </PageContainer>
   );
 }
