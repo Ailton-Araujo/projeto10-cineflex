@@ -39,3 +39,7 @@ export function getSeats(idSession, set) {
     console.log(res);
   });
 }
+
+export function postReserve(data){
+  return axios.post("https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many", data)
+}

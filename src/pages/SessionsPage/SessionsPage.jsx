@@ -40,6 +40,7 @@ export default function SessionsPage() {
               );
             })}
           </div>
+          
           <FooterContainer data-test="footer">
             <div>
               <img src={sessions.posterURL} alt={sessions.title} />

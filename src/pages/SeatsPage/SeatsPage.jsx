@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { getSeats } from "../../components/axios";
-import axios from "axios";
-getSeats;
+import { getSeats, postReserve } from "../../components/axios";
 
 export default function SeatsPage() {
   const { idSessao } = useParams();
@@ -11,40 +9,38 @@ export default function SeatsPage() {
   const [selectedId, setSelectedID] = useState([]);
   const [selected, setSelected] = useState([]);
 
-  const [name, setName] = useState("");
-  const [cpf, setCpf] = useState("");
+  const nameRef =useRef()
+  const cpfRef = useRef()
   const navigate = useNavigate();
 
   useEffect(() => {
     getSeats(idSessao, setSeats);
   }, []);
 
-  console.log(seats)
-
   function sendPost(e) {
     e.preventDefault();
 
     let newReserve = {
       ids: [...selectedId],
-      name: name,
-      cpf: cpf,
+      name: nameRef.current.value,
+      cpf: cpfRef.current.value,
     };
+
+    console.log(newReserve)
 
     let dataReserve = {
       movie: seats.movie.title,
       day: seats.day.date,
       hour: seats.name,
       seats: [...selected],
-      name: name,
-      cpf: cpf,
+      name: nameRef.current.value,
+      cpf: cpfRef.current.value,
     };
 
-    const promise = axios.post(
-      "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
-      newReserve
-    );
+    const promise = postReserve(newReserve);
 
     promise.then((res) => {
+      console.log(res.data)
       navigate(`/sucesso`, { state: { dataReserve } });
     });
   }
@@ -80,7 +76,12 @@ export default function SeatsPage() {
                       alert("Esse assento não está disponível");
                     } else {
                       if (selectedId.includes(seat.id)) {
-                        console.log("hi");
+                        setSelected([
+                          ...selected.filter((name) => name !== seat.name),
+                        ]);
+                        setSelectedID([
+                          ...selectedId.filter((id) => id !== seat.id),
+                        ]);
                       } else {
                         setSelected([...selected, seat.name]);
                         setSelectedID([...selectedId, seat.id]);
@@ -88,6 +89,7 @@ export default function SeatsPage() {
                     }
                   }}
                 >
+                  {console.log(selected,selectedId)}
                   {seat.name}
                 </SeatItem>
               );
@@ -115,8 +117,7 @@ export default function SeatsPage() {
               data-test="client-name"
               id="name"
               placeholder="Digite seu nome..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              ref={nameRef}
               required
             />
             <label htmlFor="cpf">CPF do Comprador:</label>
@@ -124,8 +125,7 @@ export default function SeatsPage() {
               data-test="client-cpf"
               id="cpf"
               placeholder="Digite seu CPF..."
-              value={cpf}
-              onChange={(e) => setCpf(e.target.value)}
+              ref={cpfRef}
               required
             />
             <button data-test="book-seat-btn" type="submit">
@@ -178,6 +178,7 @@ const FormContainer = styled.form`
   align-items: flex-start;
   margin: 20px 0;
   font-size: 18px;
+
   button {
     align-self: center;
     width: 225px;
@@ -232,9 +233,9 @@ const CaptionItem = styled.div`
   font-size: 12px;
 `;
 const SeatItem = styled.button`
-  height: 25px;
-  width: 25px;
-  border-radius: 25px;
+  height: 26px;
+  width: 26px;
+  border-radius: 12px;
   border: 1px solid ${({ border }) => border}; // Essa cor deve mudar
   background-color: ${({ bg }) => bg};
   font-family: "Roboto";
@@ -243,10 +244,6 @@ const SeatItem = styled.button`
   align-items: center;
   justify-content: center;
   margin: 5px 3px;
-  /* &:disabled {
-    background-color: ${({ bg }) => bg};
-    border: 1px solid ${({ bg }) => (bg ? "#0E7D71" : " #F7C52B")};
-  } */
 `;
 const FooterContainer = styled.div`
   width: 100%;
