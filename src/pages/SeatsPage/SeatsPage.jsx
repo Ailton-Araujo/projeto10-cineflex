@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getSeats, postReserve } from "../../components/axios";
@@ -8,9 +8,9 @@ export default function SeatsPage() {
   const [seats, setSeats] = useState([]);
   const [selectedId, setSelectedID] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [name, setName]=useState("");
+  const [cpf, setCpf]=useState("");
 
-  const nameRef =useRef()
-  const cpfRef = useRef()
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,8 +22,8 @@ export default function SeatsPage() {
 
     let newReserve = {
       ids: [...selectedId],
-      name: nameRef.current.value,
-      cpf: cpfRef.current.value,
+      name: name,
+      cpf: cpf,
     };
 
     console.log(newReserve)
@@ -33,8 +33,8 @@ export default function SeatsPage() {
       day: seats.day.date,
       hour: seats.name,
       seats: [...selected],
-      name: nameRef.current.value,
-      cpf: cpfRef.current.value,
+      name: name,
+      cpf: cpf,
     };
 
     const promise = postReserve(newReserve);
@@ -117,7 +117,8 @@ export default function SeatsPage() {
               data-test="client-name"
               id="name"
               placeholder="Digite seu nome..."
-              ref={nameRef}
+              value={name}
+              onChange={e => setName(e.target.value)}
               required
             />
             <label htmlFor="cpf">CPF do Comprador:</label>
@@ -125,7 +126,8 @@ export default function SeatsPage() {
               data-test="client-cpf"
               id="cpf"
               placeholder="Digite seu CPF..."
-              ref={cpfRef}
+              value={cpf}
+              onChange={e => setCpf(e.target.value)}
               required
             />
             <button data-test="book-seat-btn" type="submit">
