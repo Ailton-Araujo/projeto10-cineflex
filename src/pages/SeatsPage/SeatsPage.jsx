@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getSeats } from "../../components/axios";
+import axios from "axios";
 getSeats;
 
 export default function SeatsPage() {
   const { idSessao } = useParams();
   const [seats, setSeats] = useState([]);
+  const [selectedId, setSelectedID] = useState([]);
   const [selected, setSelected] = useState([]);
 
   const [name, setName] = useState("");
@@ -17,14 +19,34 @@ export default function SeatsPage() {
     getSeats(idSessao, setSeats);
   }, []);
 
+  console.log(seats)
+
   function sendPost(e) {
     e.preventDefault();
+
     let newReserve = {
-      ids: [...selected],
+      ids: [...selectedId],
       name: name,
       cpf: cpf,
     };
-    console.log(newReserve);
+
+    let dataReserve = {
+      movie: seats.movie.title,
+      day: seats.day.date,
+      hour: seats.name,
+      seats: [...selected],
+      name: name,
+      cpf: cpf,
+    };
+
+    const promise = axios.post(
+      "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
+      newReserve
+    );
+
+    promise.then((res) => {
+      navigate(`/sucesso`, { state: { dataReserve } });
+    });
   }
 
   return (
@@ -40,14 +62,14 @@ export default function SeatsPage() {
                   data-test="seat"
                   key={seat.id}
                   bg={
-                    selected.includes(seat.id)
+                    selectedId.includes(seat.id)
                       ? "#1AAE9E"
                       : seat.isAvailable
                       ? "#C3CFD9"
                       : "#FBE192"
                   }
                   border={
-                    selected.includes(seat.id)
+                    selectedId.includes(seat.id)
                       ? "#0E7D71"
                       : seat.isAvailable
                       ? "#7B8B99"
@@ -57,10 +79,11 @@ export default function SeatsPage() {
                     if (!seat.isAvailable) {
                       alert("Esse assento não está disponível");
                     } else {
-                      if (selected.includes(seat.id)) {
-                        console.log("hi")
+                      if (selectedId.includes(seat.id)) {
+                        console.log("hi");
                       } else {
-                        setSelected([...selected, seat.id]);
+                        setSelected([...selected, seat.name]);
+                        setSelectedID([...selectedId, seat.id]);
                       }
                     }
                   }}
@@ -105,11 +128,7 @@ export default function SeatsPage() {
               onChange={(e) => setCpf(e.target.value)}
               required
             />
-            <button
-              data-test="book-seat-btn"
-              type="submit"
-              // onClick={() => navigate(`/sucesso`)}
-            >
+            <button data-test="book-seat-btn" type="submit">
               Reservar Assento(s)
             </button>
           </FormContainer>
