@@ -41,7 +41,7 @@ export default function SeatsPage() {
       console.log(res.data);
       navigate(`/sucesso`, { state: { dataReserve } });
     });
-  };
+  }
 
   return (
     <PageContainer>
