@@ -49,7 +49,7 @@ export default function SeatsPage() {
     };
 
     const sucess = () => navigate(`/sucesso`, { state: { dataReserve } });
-    
+
     postReserve(newReserve, sucess);
   }
 
@@ -121,6 +121,7 @@ export default function SeatsPage() {
           <FormContainer onSubmit={sendPost}>
             <label htmlFor="name">Nome do Comprador:</label>
             <input
+              data-test="client-name"
               id="name"
               placeholder="Digite seu nome..."
               value={name}
@@ -129,9 +130,9 @@ export default function SeatsPage() {
             />
             <label htmlFor="cpf">CPF do Comprador:</label>
             <input
+              data-test="client-cpf"
               pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}"
               maxLength="14"
-              data-test="client-cpf"
               id="cpf"
               placeholder="Digite seu CPF..."
               value={cpfMask(cpf)}
