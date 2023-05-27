@@ -5,44 +5,36 @@ export function apiToken(key) {
 }
 
 export function getMovies(set) {
-  const promise = axios.get(
-    "https://mock-api.driven.com.br/api/v8/cineflex/movies"
-  );
-  promise.then((res) => {
-    set(res.data);
-  });
-  promise.catch((res) => {
-    console.log(res);
-  });
+  axios
+    .get("https://mock-api.driven.com.br/api/v8/cineflex/movies")
+    .then((res) => set(res.data))
+    .catch((error) => console.log(error.response));
 }
 
 export function getSessions(idMovie, set) {
-  const promise = axios.get(
-    `https://mock-api.driven.com.br/api/v8/cineflex/movies/${idMovie}/showtimes`
-  );
-  promise.then((res) => {
-    set(res.data);
-  });
-  promise.catch((res) => {
-    console.log(res);
-  });
+  axios
+    .get(
+      `https://mock-api.driven.com.br/api/v8/cineflex/movies/${idMovie}/showtimes`
+    )
+    .then((res) => set(res.data))
+    .catch((error) => console.log(error.response));
 }
 
 export function getSeats(idSession, set) {
-  const promise = axios.get(
-    `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSession}/seats`
-  );
-  promise.then((res) => {
-    set(res.data);
-  });
-  promise.catch((res) => {
-    console.log(res);
-  });
+  axios
+    .get(
+      `https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSession}/seats`
+    )
+    .then((res) => set(res.data))
+    .catch((error) => console.log(error.response));
 }
 
-export function postReserve(data) {
-  return axios.post(
-    "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
-    data
-  );
+export function postReserve(data, callBack) {
+  axios
+    .post(
+      "https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",
+      data
+    )
+    .then(() => callBack())
+    .catch((error) => console.log(error.response));
 }

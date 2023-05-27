@@ -1,13 +1,8 @@
 import styled from "styled-components";
-import {
-  Routes,
-  Route,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { apiToken } from "./components/axios";
 
-import arrow from "./assets/arrow.svg"
+import arrow from "./assets/arrow.svg";
 
 import HomePage from "./pages/HomePage/HomePage";
 import SessionsPage from "./pages/SessionsPage/SessionsPage";
@@ -17,7 +12,6 @@ import SuccessPage from "./pages/SuccessPage/SuccessPage";
 import GlobalStyle from "./style/GlobalStyle";
 
 export default function App() {
-  
   apiToken("DlfoYSzCAh10NN53qorutHex");
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -54,7 +48,7 @@ const NavContainer = styled.div`
   font-size: 34px;
   position: fixed;
   top: 0;
-  button{
+  button {
     width: 0px;
     height: 0px;
     border: none;
@@ -62,7 +56,7 @@ const NavContainer = styled.div`
     position: absolute;
     top: calc(50%-20px);
     left: 30px;
-    img{
+    img {
       width: 45px;
       height: 40px;
     }

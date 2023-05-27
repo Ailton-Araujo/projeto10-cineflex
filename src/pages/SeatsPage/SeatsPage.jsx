@@ -13,6 +13,15 @@ export default function SeatsPage() {
 
   const navigate = useNavigate();
 
+  const cpfMask = (value) => {
+    return value
+      .replace(/\D/g, "") // substitui qualquer caracter que nao seja numero por nada
+      .replace(/(\d{3})(\d)/, "$1.$2") // captura 2 grupos de numero o primeiro de 3 e o segundo de 1, apos capturar o primeiro grupo ele adiciona um ponto antes do segundo grupo de numero
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})/, "$1-$2")
+      .replace(/(-\d{2})\d+?$/, "$1"); // captura 2 numeros seguidos de um traço e não deixa ser digitado mais nada
+  };
+
   useEffect(() => {
     getSeats(idSessao, setSeats);
   }, []);
@@ -20,27 +29,28 @@ export default function SeatsPage() {
   function sendPost(e) {
     e.preventDefault();
 
-    const newReserve = {
-      ids: [...selectedId],
-      name: name,
-      cpf: cpf,
-    };
+    if (selected.length === 0) {
+      return alert("Nenhum assento Selecionado");
+    }
 
     const dataReserve = {
       movie: seats.movie.title,
       day: seats.day.date,
       hour: seats.name,
       seats: [...selected],
-      name: name,
-      cpf: cpf,
+      cpf,
+      name,
     };
 
-    const promise = postReserve(newReserve);
+    const newReserve = {
+      ids: [...selectedId],
+      cpf: cpf.replaceAll(/[\.\-]/g, ""),
+      name,
+    };
 
-    promise.then((res) => {
-      console.log(res.data);
-      navigate(`/sucesso`, { state: { dataReserve } });
-    });
+    const sucess = () => navigate(`/sucesso`, { state: { dataReserve } });
+    
+    postReserve(newReserve, sucess);
   }
 
   return (
@@ -87,7 +97,6 @@ export default function SeatsPage() {
                     }
                   }}
                 >
-                  {console.log(selected, selectedId)}
                   {seat.name}
                 </SeatItem>
               );
@@ -112,7 +121,6 @@ export default function SeatsPage() {
           <FormContainer onSubmit={sendPost}>
             <label htmlFor="name">Nome do Comprador:</label>
             <input
-              data-test="client-name"
               id="name"
               placeholder="Digite seu nome..."
               value={name}
@@ -121,10 +129,12 @@ export default function SeatsPage() {
             />
             <label htmlFor="cpf">CPF do Comprador:</label>
             <input
+              pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}"
+              maxLength="14"
               data-test="client-cpf"
               id="cpf"
               placeholder="Digite seu CPF..."
-              value={cpf}
+              value={cpfMask(cpf)}
               onChange={(e) => setCpf(e.target.value)}
               required
             />

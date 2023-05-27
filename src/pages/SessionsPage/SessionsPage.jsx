@@ -20,7 +20,6 @@ export default function SessionsPage() {
         <>
           <div>
             {sessions.days.map((day) => {
-              console.log(day);
               return (
                 <SessionContainer data-test="movie-day" key={day.id}>
                   {day.weekday} - {day.date}

@@ -4,8 +4,6 @@ import styled from "styled-components";
 export default function SuccessPage() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  console.log(state.dataReserve);
-
   return (
     <PageContainer>
       <h1>
@@ -27,7 +25,7 @@ export default function SuccessPage() {
           <p>Ingressos</p>
         </strong>
         {state.dataReserve.seats.map((seat) => {
-          return <p>Assento {seat}</p>;
+          return <p key={seat}>Assento {seat}</p>;
         })}
       </TextContainer>
 

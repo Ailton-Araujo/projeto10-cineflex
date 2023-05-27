@@ -10,7 +10,6 @@ export default function HomePage() {
   useEffect(() => {
     getMovies(setMovies);
   }, []);
-  console.log(movies);
   return (
     <PageContainer>
       Selecione o filme
